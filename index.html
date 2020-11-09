@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Análise de Ondas Sonoras</title>
+		<meta charset="UTF-8">
+		<link href='http://fonts.googleapis.com/css?family=Alike' rel='stylesheet' type='text/css'>
+		<style>
+			* { margin:0; padding:0; }
+			body { font: 14pt 'Alike', sans-serif; width:100%; height:100%; color: #FFF; background: grey; overflow: hidden; transition: background .5s;}
+			body.confident {background: black }
+			
+			.droptarget { background-color: #348781}
+			div.confident { color: white; }
+			div.vague { color: lightgrey; }
+
+			
+			#detector { 
+				width: 100%; height: 300px;
+				text-align: center; 
+				position: absolute; left: 0; right: 0; bottom: 0;
+				margin: auto;
+			}
+
+			.infoblock { display: inline-block; margin-right: 30px; text-align: left;}
+
+			.label { font-size: 22px; }
+			.data {font-size: 36px;}
+
+			#output { width: 300px; height: 42px; }
+			#flat { display: none; }
+			#sharp { display: none; }
+			.flat #flat { display: inline; }
+			.sharp #sharp { display: inline; }
+
+			.action { 
+				display: block;
+				position: absolute; top: 20px; left: 0; right: 0;
+				margin: auto;
+				text-align: center;
+				height: 100px; width: 100%;  }
+
+			button {
+				display: inline-block; margin-top: 15px;
+				background: none;  color: white; border: 1px solid white; border-radius: 4px; padding: 10px; text-transform: capitalize;
+			}
+			button:hover { opacity: 0.7; cursor: pointer; }
+
+			canvas {display:block;}
+
+			#info {
+				position: absolute;
+				bottom: 0;
+				padding: 10px;
+				font-size: 16px;
+				font-family: sans-serif;
+				color: #aaa;
+				z-index: 100000;
+			}
+			#info a {
+				color: #aaa;
+				cursor: pointer;
+				text-decoration: none;
+			}
+			#info a:hover {
+				color: #fff;
+			}
+			#howto {
+				z-index: 100;
+			}
+			#howto_explanation {
+				display:none;
+				width: 170px;
+				border-top: 1px dotted #777;
+				border-bottom: 1px dotted #777;
+				margin-bottom: 10px;
+				background-color: #171717;
+    			width: 400px;
+    			padding: 20px;
+			}
+			#howto_explanation.visible p {
+				font-size: 16px; margin: 5px;
+			}
+			#howto_explanation.visible {
+				display: block;
+			}
+
+		</style>
+	</head>
+	<body>
+		<script src="js/pitchdetect.js"></script>		
+		
+		<div class="action">
+			<div class="infoblock">
+				<div class="label">Audio</div>	
+				<button onclick="toggleLiveInput()">Microfone</button>
+			</div>
+			<div class="infoblock">
+				<div class="label">Oscilador</div>	
+				<button value="C" onclick="toggleOscillator(this.value)">C</button> 
+				<button value="C#" onclick="toggleOscillator(this.value)">C#</button> 
+				<button value="D" onclick="toggleOscillator(this.value)">D</button> 
+				<button value="D#" onclick="toggleOscillator(this.value)">D#</button> 
+				<button value="E" onclick="toggleOscillator(this.value)">E</button>
+				<button value="F" onclick="toggleOscillator(this.value)">F</button>
+				<button value="G" onclick="toggleOscillator(this.value)">G</button>
+				<button value="G#" onclick="toggleOscillator(this.value)">G#</button>
+				<button value="A" onclick="toggleOscillator(this.value)">A</button>
+				<button value="A#" onclick="toggleOscillator(this.value)">A#</button>
+				<button value="B" onclick="toggleOscillator(this.value)">B</button> 
+			</div>
+		</div>
+		
+		<div id="info">
+			
+			<div id="howto_explanation" class="howto_explanation">
+				<p>Este página usa uma API de Áudio experimental. Pode ser que não funcione em todos os navegadores</p>
+				<p><b>1.</b> No Google Chrome, abra uma aba e digite <b>chrome://flags</b>.</p>
+				<p></p>
+				<p><b>2.</b> Ative <b>Web Audio Input</b>, você terá que reiniciar o navegador.</p>
+				<p><b>3.</b> Dê acesso ao microfone.</p>
+				<p><b>4.</b> Comece a falar, tocar ou cantar.</p>
+			</div>
+			<button id="howto" onclick="howTo()">?</button>
+			
+		</div>
+
+
+		<div id="detector" class="vague">
+			<div class="infoblock">
+				<div class="label">Nota</div>	
+				<div class="note data"><span id="note">--</span></div>
+			</div>
+			<div class="infoblock">
+				<div class="label">Frequência</div>	
+				<div class="pitch data"><span id="pitch">--</span> Hz</div>
+			</div>
+			<div class="infoblock">
+				<div class="label">Comprimento</div>	
+				<div class="wavelenght data"><span id="wavelenght">--</span> m</div>
+			</div>
+			<div class="infoblock">
+				<div class="label">Período</div>	
+				<div class="period data"><span id="period">--</span> s</div>
+			</div>
+		</div>
+
+		<canvas id="waveform" width="1256" height="800"></canvas>
+	</body>
+</html>
