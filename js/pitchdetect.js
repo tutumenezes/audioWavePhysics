@@ -23,22 +23,6 @@ var detectorElem,
 	periodElem,
 	noteElem;
 
-	// How to
-	
-	
-	function howTo() {
-		
-
-	 	if(howto) {
-	 		howtoElem.className = ' ';
-	 		howto = false;
-	 	} else {
-	 		howtoElem.className = 'visible';
-	 		howto = true;
-	 	}
-	 }
-
-
 
 window.onload = function() {
 	audioContext = new AudioContext();
@@ -87,6 +71,19 @@ function error() {
     alert('Stream generation failed.');
 }
 
+
+// How To - abre e fecha a explicação no ícone de ?
+function howTo() {
+ 	if(howto) {
+ 		howtoElem.className = ' ';
+ 		howto = false;
+ 	} else {
+ 		howtoElem.className = 'visible';
+ 		howto = true;
+ 	}
+ }
+
+//faz a requisição da mídia do usuário
 function getUserMedia(dictionary, callback) {
     try {
         navigator.getUserMedia = 
@@ -116,7 +113,6 @@ function getOscilatorFrequencyFromTable(oscilatorNote) {
 	switch(oscilatorNote) {
   		case "C":
     		return "261.625519";
-    		console.log(oscilatorNote);
 	    break;
 
 	    case "C#":
@@ -246,6 +242,10 @@ function noteFromPitch( frequency ) {
 	return Math.round( noteNum ) + 69;
 }
 
+function frequencyFromNoteNumber( note ) {
+	return 440 * Math.pow(2,(note-69)/12);
+}
+
 function wavelenghtFromFreq( frequency ) {
 	var c = 343; // velocidade de propagação de audio no ar
 	var wavelenght = c / frequency;
@@ -255,10 +255,6 @@ function wavelenghtFromFreq( frequency ) {
 function periodFromFreq( frequency ) {
 	var period = 1 / frequency;
 	return period;
-}
-
-function frequencyFromNoteNumber( note ) {
-	return 440 * Math.pow(2,(note-69)/12);
 }
 
 //compara as frequências base com a captada no mic
@@ -316,12 +312,13 @@ function updatePitch( time ) {
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 	
-	// This draws the current waveform, useful for debugging
+	// Desenha o canvas em fullScreen ;)
 	if (canvas) {  
-		var oldArray = waveCanvasContext.getImageData(0,0,canvas.width,canvas.height);
+		//essa primeira parte é pra fazer o fundo ficar transparente
+		var oldArray = waveCanvasContext.getImageData(0,0,canvas.width,canvas.height); 
 		//count through only the alpha pixels
 		for(var d=3;d<oldArray.data.length;d+=4){
-		    //dim it with some feedback, I'm using .9
+		    
 		    oldArray.data[d] = Math.floor(oldArray.data[d]*.2);
 		}
 		waveCanvasContext.putImageData(oldArray,0,0);
@@ -355,6 +352,7 @@ function updatePitch( time ) {
 	 	pitchElem.innerText = "--";
 		noteElem.innerText = "-";
 		wavelenghtElem.innerText = "-";
+		periodElem.innerText = "-";
  	} else {
  		bodyElem.className = "confident";
 	 	detectorElem.className = "confident";
@@ -368,6 +366,7 @@ function updatePitch( time ) {
 		wavelenghtElem.innerHTML = wavelenght.toFixed(2);
 		periodElem.innerHTML = period.toFixed(6);
 
+		// Uncomment for debugging
 		// console.log('------------------------');
 		// console.log('frequency: '+pitch);
 		// console.log('note: '+note);

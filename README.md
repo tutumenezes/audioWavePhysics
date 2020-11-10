@@ -1,5 +1,3 @@
-## audioWavePhysics
-
 # Análise de Ondas Sonoras
 
 
